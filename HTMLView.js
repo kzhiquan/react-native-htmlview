@@ -4,6 +4,7 @@ import {
   Linking,
   StyleSheet,
   Text,
+  View,
 } from 'react-native'
 
 const boldStyle = {fontWeight: '500'}
@@ -17,9 +18,14 @@ const baseStyles = StyleSheet.create({
   em: italicStyle,
   pre: codeStyle,
   code: codeStyle,
+  p:{
+    backgroundColor : 'rgba(3, 3, 3,0.5)',
+    //height:20,
+  },
   a: {
     fontWeight: '500',
     color: '#007AFF',
+    backgroundColor:'red',
   },
 })
 
@@ -70,7 +76,15 @@ class HtmlView extends Component {
 
   render() {
     if (this.state.element) {
-      return <Text children={this.state.element} />
+      //return <Text children={this.state.element} />
+      return <View 
+                children={this.state.element} 
+                /*style={{    
+                  flex:1,
+                  flexDirection:'row',
+                  flexWrap:'wrap',
+                  alignItems:'flex-start',
+                }}*//>
     }
     return <Text />
   }

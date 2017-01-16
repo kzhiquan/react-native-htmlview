@@ -5,6 +5,7 @@ var entities = require('entities')
 
 var {
   Text,
+  View,
 } = ReactNative
 
 var Image = require('./helper/Image')
@@ -13,6 +14,12 @@ var Image = require('./helper/Image')
 var LINE_BREAK = '\n'
 var PARAGRAPH_BREAK = '\n\n'
 var BULLET = '\u2022 '
+
+
+function onLayout(event){
+  console.log('onLayout', event.nativeEvent.layout);
+}
+
 
 function htmlToElement(rawHtml, opts, done) {
   function domToElement(dom, parent) {
@@ -26,8 +33,9 @@ function htmlToElement(rawHtml, opts, done) {
 
 
       if (node.type == 'text') {
+        console.log('parent', parent.name, opts.styles[parent.name], entities.decodeHTML(node.data));
         return (
-          <Text key={index} style={parent ? opts.styles[parent.name] : null}>
+          <Text key={index} style={parent ? opts.styles[parent.name] : null} onLayout={onLayout}>
             {entities.decodeHTML(node.data)}
           </Text>
         )
@@ -47,6 +55,7 @@ function htmlToElement(rawHtml, opts, done) {
             width: img_w,
             height: img_h,
           }
+          console.log('img_style', img_style);
           return (
             <Image key={index} source={source} style={img_style} />
           )
@@ -57,7 +66,7 @@ function htmlToElement(rawHtml, opts, done) {
           linkPressHandler = () => opts.linkHandler(entities.decodeHTML(node.attribs.href))
         }
 
-        return (
+        /*return (
           <Text key={index} onPress={linkPressHandler}>
             {node.name == 'pre' ? LINE_BREAK : null}
             {node.name == 'li' ? BULLET : null}
@@ -66,7 +75,27 @@ function htmlToElement(rawHtml, opts, done) {
             {node.name == 'p' && index < list.length - 1 ? PARAGRAPH_BREAK : null}
             {node.name == 'h1' || node.name == 'h2' || node.name == 'h3' || node.name == 'h4' || node.name == 'h5' ? LINE_BREAK : null}
           </Text>
-        )
+        )*/
+        /*return (
+             <View 
+                key={index} 
+                onPress={linkPressHandler} 
+                style={{                  
+                  flex:1,
+                  flexDirection:'row',
+                  flexWrap:'wrap',
+                  alignItems:'flex-start',
+                }}>
+                {node.name == 'pre' ? <Text>{LINE_BREAK}</Text> : null}
+                {node.name == 'li' ? <Text>{BULLET}</Text> : null}
+                {domToElement(node.children, node)}
+                {node.name == 'br' || node.name == 'li' ? <Text>{LINE_BREAK}</Text> : null}
+                {node.name == 'p' && index < list.length - 1 ? <Text>{PARAGRAPH_BREAK}</Text> : null}
+                {node.name == 'h1' || node.name == 'h2' || node.name == 'h3' || node.name == 'h4' || node.name == 'h5' ? <Text>{LINE_BREAK}</Text> : null}
+             </View>
+
+        )*/
+        return domToElement(node.children, node);
       }
     })
   }
